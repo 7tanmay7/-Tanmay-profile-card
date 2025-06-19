@@ -1,7 +1,7 @@
 /* Import General Sans font */
 @import url('https://fonts.cdnfonts.com/css/general-sans');
 
-/* Custom CSS Variables - Overhauled for Better Contrast */
+/* Custom CSS Variables */
 :root {
     --bg-body: #121212; /* Slightly softer dark background */
     --bg-card: #1e1e1e; /* Distinct, slightly lighter card background */
@@ -16,14 +16,14 @@
     /* Card glow gradient now uses the vibrant teal */
     --card-gradient: radial-gradient(circle, var(--accent-glow-start) 0%, var(--accent-glow-end) 100%);
 
-    /* UPDATED: Gradient for Name - Made significantly brighter */
+    /* Name Gradient: Significantly brighter */
     --text-name-gradient-start: #E6EAF0; /* Very light, almost white gray */
     --text-name-gradient-end: #F5F7FA;   /* Brighter, almost pure white */
 
-    /* New: Default values for text glow position and opacity */
+    /* Text Glow for Name: Default values */
     --name-glow-x: 50%;
     --name-glow-y: 50%;
-    --name-glow-opacity: 0;
+    --name-glow-opacity: 0; /* Starts hidden */
 }
 
 /* Global Styles */
@@ -61,11 +61,11 @@ body {
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-/* Card hover effect with vibrant accent glow */
+/* Card border glow effect */
 .card {
-    --start: 0; /* This variable will be updated by JavaScript */
+    --start: 0; /* This variable is updated by JavaScript for border rotation */
     position: relative;
-    z-index: 40;
+    z-index: 40; /* Ensures card is above background elements */
     overflow: hidden;
 }
 
@@ -83,24 +83,25 @@ body {
     background-attachment: fixed;
     mask: linear-gradient(#0000, #0000),
         conic-gradient(
-            from calc((var(--start) - 15) * 1deg), /* --start now dynamically controlled */
+            from calc((var(--start) - 15) * 1deg),
             rgba(0, 230, 184, 0.2) 0deg,
             var(--accent-teal),
             rgba(0, 230, 184, 0) 100deg
         );
     mask-composite: intersect;
     mask-clip: padding-box, border-box;
-    opacity: 0; /* Default opacity is 0 */
-    transition: opacity 0.3s ease; /* Only transition opacity for smooth fade in/out */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease; /* Smooth fade in/out */
 }
 
-/* New class to control the border glow opacity via JS */
+/* Activates card border glow on hover */
 .card.hovered::before {
-    opacity: 1; /* Make glow visible when hovered */
+    opacity: 1;
 }
 
+/* Helper element for background glow (not interactive) */
 .glow {
-    pointer-events: none;
+    pointer-events: none; /* Crucial: ensures this element doesn't block clicks */
     position: absolute;
     width: 100%;
     height: 100%;
@@ -109,7 +110,6 @@ body {
     transform: translate(-50%, -50%);
     filter: blur(20px) saturate(300%);
 }
-
 
 /* Profile Image */
 .profile-image-container {
@@ -132,17 +132,17 @@ body {
     display: block;
 }
 
-/* Name (with moving glow) */
+/* Name (with moving glow effect) */
 .name {
     font-size: 2.4em;
     font-weight: 800;
     margin-bottom: 5px;
     
-    /* Layered backgrounds for static gradient and moving glow */
+    /* Layered backgrounds: moving radial glow + static linear gradient */
     background-image:
         radial-gradient(
-            circle 60px at var(--name-glow-x) var(--name-glow-y), /* Moving glow controlled by JS */
-            rgba(0, 230, 184, var(--name-glow-opacity)), /* Use opacity variable */
+            circle 60px at var(--name-glow-x) var(--name-glow-y), /* Position controlled by JS */
+            rgba(0, 230, 184, var(--name-glow-opacity)), /* Opacity controlled by JS */
             transparent
         ),
         linear-gradient(
@@ -153,25 +153,24 @@ body {
             var(--text-name-gradient-end) 100%
         );
     
-    background-size: 120px 120px, auto; /* Size for radial, auto for linear */
-    background-position: var(--name-glow-x) var(--name-glow-y), 0 0; /* Position the radial and linear gradients */
-    background-repeat: no-repeat, repeat; /* Don't repeat the radial glow */
-    background-blend-mode: screen, normal; /* Blend the moving glow over the static gradient */
+    background-size: 120px 120px, auto; /* Size for radial glow, auto for linear */
+    background-position: var(--name-glow-x) var(--name-glow-y), 0 0; /* Position for each background */
+    background-repeat: no-repeat, repeat; /* Prevent radial glow from repeating */
+    background-blend-mode: screen, normal; /* Blend moving glow over the static gradient */
     
-    -webkit-background-clip: text;
+    -webkit-background-clip: text; /* Clip background to text shape */
     background-clip: text;
-    color: transparent; /* Essential for background-clip: text */
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Base text glow */
+    color: transparent; /* Makes text transparent so background shows through */
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* Base white text glow */
 
-    /* Transition for the glow's opacity */
-    transition: --name-glow-opacity 0.3s ease-out; /* Smooth transition for glow opacity */
+    /* Smooth transition for the glow's opacity */
+    transition: --name-glow-opacity 0.3s ease-out;
 }
 
-/* Class added by JS when mouse is over the name element */
+/* Activates text glow when mouse is over the name */
 .name.text-hovered {
-    --name-glow-opacity: 0.8; /* Make the text glow visible */
+    --name-glow-opacity: 0.8;
 }
-
 
 .role {
     font-size: 1.15em;
@@ -195,13 +194,38 @@ body {
     border-top: 1px solid var(--border-main);
 }
 
+/* Section Title (with expanding underline/arrow effect) */
 .section-title {
     font-size: 1.8em;
     font-weight: 600;
     color: var(--accent-teal);
     margin-bottom: 20px;
     text-align: center;
+    position: relative; /* For positioning the ::after pseudo-element */
+    display: inline-block; /* Allows width to conform to content for centering and ::after */
+    padding-bottom: 5px; /* Space for the underline */
+    overflow: hidden; /* Ensures the line doesn't extend past its container initially */
+    cursor: default; /* Indicate it's interactive but not a link */
 }
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0; /* Position at the bottom of the padding */
+    left: 50%;
+    transform: translateX(-50%); /* Center the line horizontally */
+    width: 0; /* Starts with zero width */
+    height: 3px; /* Thickness of the line */
+    background-color: var(--accent-teal); /* Neon green color */
+    border-radius: 2px; /* Slightly rounded ends */
+    transition: width 0.3s ease-out; /* Smooth expansion animation */
+}
+
+/* Expands the underline on hover */
+.section-title:hover::after {
+    width: 100%; /* Expands to full width of the text content */
+}
+
 
 .skill-category {
     margin-bottom: 20px;
@@ -254,6 +278,9 @@ body {
     display: flex;
     justify-content: center;
     gap: 15px;
+    /* FIX: Ensure social links are clickable by bringing them to the front */
+    position: relative; /* Establishes a new stacking context */
+    z-index: 41;       /* Higher than .card's z-index (40) to appear on top */
 }
 
 .social-icon {
