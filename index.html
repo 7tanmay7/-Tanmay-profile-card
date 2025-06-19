@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanmay Raj - Profile Card</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.cdnfonts.com/css/general-sans" rel="stylesheet">
+</head>
+<body>
+    <div class="profile-card card">
+        <div class="glow"></div>
+        <div class="profile-image-container">
+            <img src="tan.png" alt="Tanmay Raj smiling in a professional headshot, wearing a collared shirt, neutral background, friendly and approachable expression" class="profile-image">
+        </div>
+        <h1 class="name">Tanmay Raj</h1>
+        <p class="role">MERN Stack Developer</p>
+        <p class="bio">A passionate MERN Stack Developer with a knack for building impactful web applications and AI-powered chatbots. I love solving real-world problems through code, actively contribute to hackathons, and continuously sharpen my problem-solving skills as a 5-star HackerRank Problem Solver.</p>
+
+        <div class="skills-section">
+            <h2 class="section-title">My Skills</h2>
+
+            <div class="skill-category">
+                <h3><i class="fas fa-code"></i> Languages</h3>
+                <ul class="skill-list">
+                    <li>C++</li>
+                    <li>JavaScript</li>
+                    <li>Java</li>
+                    <li>SQL</li>
+                </ul>
+            </div>
+
+            <div class="skill-category">
+                <h3><i class="fas fa-desktop"></i> Frontend Technologies</h3>
+                <ul class="skill-list">
+                    <li>ReactJS</li>
+                    <li>Redux</li>
+                    <li>JavaScript</li>
+                    <li>ReactNative</li>
+                    <li>Bootstrap</li>
+                    <li>HTML</li>
+                    <li>CSS</li>
+                </ul>
+            </div>
+
+            <div class="skill-category">
+                <h3><i class="fas fa-server"></i> Backend Technologies</h3>
+                <ul class="skill-list">
+                    <li>Javascript</li>
+                    <li>NodeJS</li>
+                    <li>ExpressJS</li>
+                    <li>API</li>
+                </ul>
+            </div>
+
+            <div class="skill-category">
+                <h3><i class="fas fa-database"></i> Database</h3>
+                <ul class="skill-list">
+                    <li>MySQL</li>
+                    <li>MongoDB</li>
+                    <li>Postgres</li>
+                    <li>MS SQL Server</li>
+                </ul>
+            </div>
+
+            <div class="skill-category">
+                <h3><i class="fas fa-tools"></i> Developer Tools</h3>
+                <ul class="skill-list">
+                    <li>Git</li>
+                    <li>GitHub</li>
+                    <li>GitLab</li>
+                    <li>Postman</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/7tanmay7" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+            <a href="http://linkedin.com/in/tanmay-raj-8a34b81b9" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+    </div>
+
+    <script>
+        const card = document.querySelector('.profile-card');
+        const nameElement = document.querySelector('.name'); // Get the name element
+
+        // Function to update the glow effects based on mouse position
+        function updateGlow(e) {
+            const cardRect = card.getBoundingClientRect();
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            // --- Border Glow Logic (Existing) ---
+            const cardXRel = mouseX - cardRect.left; // Mouse X relative to card
+            const cardYRel = mouseY - cardRect.top;  // Mouse Y relative to card
+
+            const centerX = cardRect.width / 2;
+            const centerY = cardRect.height / 2;
+
+            const dx = cardXRel - centerX;
+            const dy = cardYRel - centerY;
+
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            const rotation = (angle + 360) % 360;
+            card.style.setProperty('--start', rotation);
+
+            // --- Text Glow Logic for Name (New) ---
+            const nameRect = nameElement.getBoundingClientRect();
+
+            // Check if mouse is over the name element
+            if (mouseX >= nameRect.left && mouseX <= nameRect.right &&
+                mouseY >= nameRect.top && mouseY <= nameRect.bottom) {
+                
+                // Mouse position relative to the name element
+                const nameMouseX = mouseX - nameRect.left;
+                const nameMouseY = mouseY - nameRect.top;
+
+                // Convert to percentage relative to name element size
+                const nameGlowX = (nameMouseX / nameRect.width) * 100;
+                const nameGlowY = (nameMouseY / nameRect.height) * 100;
+
+                nameElement.style.setProperty('--name-glow-x', `${nameGlowX}%`);
+                nameElement.style.setProperty('--name-glow-y', `${nameGlowY}%`);
+                nameElement.classList.add('text-hovered'); // Activate text hover effect
+            } else {
+                nameElement.classList.remove('text-hovered'); // Deactivate text hover effect
+            }
+        }
+
+        // Add event listeners
+        card.addEventListener('mousemove', updateGlow); // Follow mouse movement on the card
+
+        card.addEventListener('mouseenter', () => {
+            card.classList.add('hovered'); // Add class to control border glow opacity
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.classList.remove('hovered'); // Remove class to hide border glow
+            nameElement.classList.remove('text-hovered'); // Ensure text glow also fades
+            // Optional: Reset --start to a default position if desired when not hovered
+            // card.style.setProperty('--start', '0');
+        });
+    </script>
+</body>
+</html>
